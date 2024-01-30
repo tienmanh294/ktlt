@@ -1,0 +1,14 @@
+set_date 01012024
+create user --fullname Manager // Tạo ra project manager ID=1
+create user --by 1 –-fullname Leader1 –-role leader // Leader1 ID=2
+create user --by 1 –-fullname Leader2 –-role leader // Leader2 ID=3
+create user --by 2 –-fullname Member1 –-role member // Member1 ID=4
+create user --by 2 –-fullname Member2 –-role member // Member2 ID=5
+create user --by 3 –-fullname Member3 –-role member // Member3 ID=6
+delete user --by 3 –-id 6 // Delete Member3 ID=6
+create user --by 3 –-fullname Member4 –-role member // Member4 ID=7
+create project --by 1 --name Project1 --leaders 2,3 --members 4,5,7 --start_time 05012024 --end_time 15012024 // Project1 ID=1
+edit project --by 1 --id 1 --end_time 31012024 // Gia hạn project
+edit project --by 1 --id 1 --status done
+set_date 01022024
+create_report // Project đã hoàn thành đúng tiến độ
