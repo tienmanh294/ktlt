@@ -1,0 +1,25 @@
+set_date 01012024
+create user --fullname Manager
+create user --by 1 --fullname Leader2 --role leader
+create user --by 1 --fullname Leader3 --role leader
+create user --by 2 --fullname Member4 --role member
+create user --by 2 --fullname Member5 --role member
+create user --by 3 --fullname Member6 --role member
+create user --by 3 --fullname Member7 --role member
+create user --by 3 --fullname Member8 --role member
+create user --fullname Manager9 --role project_manager
+create project --by 1 --name Project1 --leaders 2,3,10 --members 4,5,6,7 --start_time 05012024 --end_time 15012024
+create project --by 1 --name Project2 --leaders 2,3 --members 4,5,6,8,10 --start_time 05012024 --end_time 15012024
+create project --by 1 --name Project3 --leaders 2,3 --members 4,5,6,8 --start_time 05012024 --end_time 15012024
+create project --by 10 --name Project4 --leaders 2,3 --members 4,5,6,8 --start_time 05012024 --end_time 15012024
+create project --by 9 --name Project5 --leaders 1,2,3 --members 4,5,6,8 --start_time 05012024 --end_time 15012024
+create project --by 9 --name Project6 --leaders 2,3 --members 4,5,6,8,1 --start_time 05012024 --end_time 15012024
+create project --by 9 --name Project5 --leaders 2,5 --members 4,5,6,8 --start_time 05012024 --end_time 15012024
+create project --by 9 --name Project6 --leaders 2,3 --members 4,5,6,8,2 --start_time 05012024 --end_time 15012024
+edit project --by 10 --id 1 --end_time 31012024
+edit project --by 1 --id 12 --status finished
+create_report
+set_date 01022024
+delete project --by 10 --id 1
+delete project --by 1 --id 10
+create_report

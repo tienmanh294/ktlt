@@ -1,0 +1,77 @@
+set_date 01012024
+create user --fullname Manager
+create user --by 1 --fullname Leader2 --role leader
+create user --by 1 --fullname Leader3 --role leader
+create user --by 2 --fullname Member4 --role member
+create user --by 2 --fullname Member5 --role member
+create user --by 3 --fullname Member6 --role member
+create user --by 3 --fullname Member7 --role member
+create user --by 3 --fullname Member8 --role member
+create project --by 1 --name Project1 --leaders 2,3 --members 4,5,6,7 --start_time 05012024 --end_time 15012024
+create task --by 2 --name buttonE --project_id 1 --members 5,6,7 --start_time 05022024 --end_time 15022024
+create issue --by 4 --name issueA --task_id 1 --members 5,6 --description createissueA
+create_report
+set_date 01022024
+create user --fullnamee Manager
+createe user --by 1 --fullname Leader2 --role leader
+create usere --by 1 --fullname Leader3 --role leader
+create user --by 2f --fullname Member4 --role member
+create user --by 2 --fullnamee Member5 --role member
+create user --by 3 --fullname Member6 --rolee member
+create user --by --fullname Member7 --role member
+create user --by 3 --fullname --role member
+create user --by 3 --fullname member8 --role
+createe project --by 1 --name Project1 --leaders 2,3 --members 4,5,6,7 --start_time 05012024 --end_time 15012024
+create projecte --by 1 --name Project1 --leaders 2,3 --members 4,5,6,7 --start_time 05012024 --end_time 15012024
+create project --bye 1 --name Project1 --leaders 2,3 --members 4,5,6,7 --start_time 05012024 --end_time 15012024
+create project --by 1 --namee Project1 --leaders 2,3 --members 4,5,6,7 --start_time 05012024 --end_time 15012024
+create project --by 1 --name Project1 --leaderss 2,3 --members 4,5,6,7 --start_time 05012024 --end_time 15012024
+create project --by 1 --name Project1 --leaders 2,3 --membersg 4,5,6,7 --start_time 05012024 --end_time 15012024
+create project --by 1 --name Project1 --leaders 2,3 --members 4,5,6,7 --start_times 05012024 --end_time 15012024
+create project --by 1 --name Project1 --leaders 2,3 --members 4,5,6,7 --start_time 05012024 --end_times 15012024
+create project --by 1f --name Project1 --leaders 2,3 --members 4,5,6,7 --start_time 05012024 --end_time 15012024
+create project --by 1 --name Project1 --leaders 2,f3 --members 4,5,6,7 --start_time 05012024 --end_time 15012024
+create project --by 1 --name Project1 --leaders 2,3 --members 4,5,6;,7 --start_time 05012024 --end_time 15012024
+create project --by 1 --name Project1 --leaders 2,3 --members 4,5,6,7 --start_time 005012024 --end_time 15012024
+create project --by 1 --name Project1 --leaders 2,3 --members 4,5,6,7 --start_time 05012024 --end_time 150120242
+create project --by --name Project1 --leaders 2,3 --members 4,5,6,7 --start_time 05012024 --end_time 15012024
+create project --by 1 --name --leaders 2,3 --members 4,5,6,7 --start_time 05012024 --end_time 15012024
+create project --by 1 --name Project1 --leaders --members 4,5,6,7 --start_time 05012024 --end_time 15012024
+create project --by 1 --name Project1 --leaders 2,3 --members --start_time 05012024 --end_time 15012024
+create project --by 1 --name Project1 --leaders 2,3 --members 4,5,6,7 --start_time --end_time 15012024
+create project --by 1 --name Project1 --leaders 2,3 --members 4,5,6,7 --start_time 05012024 --end_time
+create project --by 1 --name Project1 --leaders 2,3 --members 4,5,6,7 --start_time 05012024 --end_time 15012024
+createe task --by 2 --name buttonE --project_id 1 --members 5,6,7 --start_time 05022024 --end_time 15022024
+create tasks --by 2 --name buttonE --project_id 1 --members 5,6,7 --start_time 05022024 --end_time 15022024
+create task --bys 2 --name buttonE --project_id 1 --members 5,6,7 --start_time 05022024 --end_time 15022024
+create task --by 2 --namef buttonE --project_id 1 --members 5,6,7 --start_time 05022024 --end_time 15022024
+create task --by 2 --name buttonE --project_idf 1 --members 5,6,7 --start_time 05022024 --end_time 15022024
+create task --by 2 --name buttonE --project_id 1 --memberfs 5,6,7 --start_time 05022024 --end_time 15022024
+create task --by 2 --name buttonE --project_id 1 --members 5,6,7 --start_ftime 05022024 --end_time 15022024
+create task --by 2 --name buttonE --project_id 1 --members 5,6,7 --start_time 05022024 --ends_time 15022024
+create task --by 2f --name buttonE --project_id 1 --members 5,6,7 --start_time 05022024 --end_time 15022024
+create task --by 2 --name buttonE --project_id 1f --members 5,6,7 --start_time 05022024 --end_time 15022024
+create task --by 2 --name buttonE --project_id 1 --members 5,6,f7 --start_time 050220024 --end_time 15022024
+create task --by 2 --name buttonE --project_id 1 --members 5,6,7 --start_time 05022024 --end_time 150220240
+create task --by --name buttonE --project_id 1 --members 5,6,7 --start_time 05022024 --end_time 15022024
+create task --by 2 --name --project_id 1 --members 5,6,7 --start_time 05022024 --end_time 15022024
+create task --by 2 --name buttonE --project_id --members 5,6,7 --start_time 05022024 --end_time 15022024
+create task --by 2 --name buttonE --project_id 1 --members --start_time 05022024 --end_time 15022024
+create task --by 2 --name buttonE --project_id 1 --members 5,6,7 --start_time --end_time 15022024
+create task --by 2 --name buttonE --project_id 1 --members 5,6,7 --start_time 05022024 --end_time
+createf issue --by 4 --name issueA --task_id 1 --members 5,6 --description createissueA
+create issuef --by 4 --name issueA --task_id 1 --members 5,6 --description createissueA
+create issue --byf 4 --name issueA --task_id 1 --members 5,6 --description createissueA
+create issue --by 4 --namef issueA --task_id 1 --members 5,6 --description createissueA
+create issue --by 4 --name issueA --task_idf 1 --members 5,6 --description createissueA
+create issue --by 4 --name issueA --task_id 1 --membersf 5,6 --description createissueA
+create issue --by 4 --name issueA --task_id 1 --members 5,6 --descriptionf createissueA
+create issue --by 4f --name issueA --task_id 1 --members 5,6 --description createissueA
+create issue --by 4 --name issueA --task_id 1f --members 5,6 --description createissueA
+create issue --by 4 --name issueA --task_id 1 --members 5g,6 --description createissueA
+create issue --by --name issueA --task_id 1 --members 5,6 --description createissueA
+create issue --by 4 --name --task_id 1 --members 5,6 --description createissueA
+create issue --by 4 --name issueA --task_id --members 5,6 --description createissueA
+create issue --by 4 --name issueA --task_id 1 --members --description createissueA
+create issue --by 4 --name issueA --task_id 1 --members 5,6 --description
+create_report

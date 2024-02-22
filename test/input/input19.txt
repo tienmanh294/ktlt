@@ -1,0 +1,30 @@
+set_date 01012024
+create user --fullname Manager
+create user --by 1 --fullname Leader2 --role leader
+create user --by 1 --fullname Leader3 --role leader
+create user --by 2 --fullname Member4 --role member
+create user --by 2 --fullname Member5 --role member
+create user --by 3 --fullname Member6 --role member
+create user --by 3 --fullname Member7 --role member
+create user --by 3 --fullname Member8 --role member
+create user --fullname Manager9 --role project_manager
+create user --by 1 --fullname Leader10 --role leader
+create user --by 1 --fullname Leader11 --role leader
+create project --by 1 --name Project1 --leaders 2,3 --members 4,5,6,7,10 --start_time 05012024 --end_time 15012024
+create project --by 1 --name Project2 --leaders 2 --members 4,5,6,8,1 --start_time 05012024 --end_time 15012024
+create project --by 9 --name Project6 --leaders 2,7 --members 4,5,6,8 --start_time 05012024 --end_time 15012024
+create project --by 9 --name Project6 --leaders 2,1 --members 4,5,6,8 --start_time 05012024 --end_time 15012024
+edit project --by 1 --id 1 --end_time 31012024
+edit project --by 1 --id 1 --status finished
+set_date 01022024
+create task --by 1 --name buttonA --project_id 1 --members 4,5,7 --start_time 05012024 --end_time 15012024
+create task --by 2 --name buttonE --project_id 2 --members 5,6,8 --start_time 05012024 --end_time 15012024
+create issue --by 4 --name issueA --task_id 1 --members 4,7 --description createissueA
+create issue --by 5 --name issueB --task_id 1 --members 4,7 --description createissueB
+create_report
+set_date 02022024
+edit issue --by 2 --id 1 --name issueA1 --members 4,5 --description createissueA1 --status working
+edit issue --by 2 --id 2 --name issueB2 --members 4,5 --description createissueB1 --status working
+edit task --by 1 --id 1 --name ButtonA --start_time 06012024 --end_time 14012024 --members 4,5,7 --status late
+edit task --by 2 --id 2 --name ButtonB --start_time 06012024 --end_time 14012024 --members 4,5,8 --status extended
+create_report

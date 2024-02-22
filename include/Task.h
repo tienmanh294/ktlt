@@ -1,11 +1,14 @@
 #include <vector>
-enum TaskStatus{
-    initialized,
+#include<string>
+#ifndef TASK_H
+#define TASK_H
+enum class TaskStatus{
+    initialized=1,
     running,
     late,
     extended,
     done
-}
+};
 
 class Task{
     private:
@@ -17,6 +20,7 @@ class Task{
         std::string end_time;
         TaskStatus status;
         std::vector<int> issues;
+        int projectId;
     public:
         int getID();
         void setID(int id);
@@ -33,6 +37,14 @@ class Task{
         std::string getEndTime();
         void setEndTime(std::string end_time);
         TaskStatus getStatus();
+        int getProjectId();
+        void setProjectId(int projectId);
         void setStatus(TaskStatus status);
-        
-}
+        void addIssue(int issueId);
+        void addMember(int memberId);
+        void clearIssues();
+        void clearMembers();
+        void removeIssue(int issueId);
+        void removeMember(int memberId);        
+};
+#endif

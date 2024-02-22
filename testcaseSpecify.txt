@@ -1,0 +1,21 @@
+01: example testcase
+02: multiple project 
+03: edit user (member edit member name, member edit another member information) higher user edit lower user
+04: create task (create task by project manger, leader, member), create task of another project,create task with member of another project
+05: edit task (name by project manager, leader, member)task is created by another leader 
+06: delete task(without issue)
+07: create issue, edit issue (name, description, status, members) edit with member of task; member outside task; user from another project; user
+not a leader or a manager change status to resolved
+08: issue status auto change to expired
+09: create project and edit project
+10: delete project
+11: wrong format input
+12: value do not exist, list member contain user not member, list leader contain user not leader
+13: leader, manager create task outside scope
+14: member, leader excess maximum
+15: edit,delete issue is deleted when delete task
+16: assigned deleted user to project, task, issue
+17: edit, delete task is deleted when delete project
+18: edit, delete task outside scope
+19: check member is member, leader is leader
+11: delete issue(PENDING)

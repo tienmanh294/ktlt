@@ -1,0 +1,22 @@
+set_date 01012024
+create user --fullname Manager
+create user --by 1 --fullname Leader2 --role leader
+create user --by 1 --fullname Leader3 --role leader
+create user --by 1 --fullname Leader4 --role leader
+create user --by 1 --fullname Leader5 --role leader
+create user --by 1 --fullname Leader6 --role leader
+create user --by 1 --fullname Leader7 --role leader
+create user --by 1 --fullname Leader8 --role leader
+create user --by 1 --fullname Member9 --role member
+create user --by 1 --fullname Member10 --role member
+create user --by 1 --fullname Member11 --role member
+create user --by 1 --fullname Member12 --role member
+create user --by 1 --fullname Member13 --role member
+create user --by 1 --fullname Member14 --role member
+create user --by 1 --fullname Member15 --role member
+create project --by 1 --name Project1 --leaders 2,3 --members 9,10,11,12,13,14 --start_time 05012024 --end_time 15012024
+create project --by 1 --name Project1 --leaders 2,3,4,5,6,7 --members 9,10,11,12,13 --start_time 05012024 --end_time 15012024
+set_date 01022024
+edit project --by 1 --id 1 --leaders 2,3,4,5,6,7 --members 9,10,11,12,13
+edit project --by 1 --id 2 --leaders 2,3,4,5,6 --members 9,10,11,12,13,14
+create_report

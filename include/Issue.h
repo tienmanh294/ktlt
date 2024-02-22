@@ -1,10 +1,13 @@
 #include <vector>
-enum IssueStatus{
-    found,
+#include<string>
+#ifndef ISSUE_H
+#define ISSUE_H
+enum class IssueStatus{
+    found=1,
     working,
     expired,
     resolved
-}
+};
 
 class Issue{
     private:
@@ -16,6 +19,7 @@ class Issue{
         std::string start_time;
         std::string end_time;
         IssueStatus status;
+        int taskId;
     public:
         int getID();
         void setID(int id);
@@ -33,5 +37,10 @@ class Issue{
         void setEndTime(std::string end_time);
         IssueStatus getStatus();
         void setStatus(IssueStatus status);
-        
-}
+        int getTaskId();
+        void setTaskId(int taskId);
+        void addMember(int memberId);
+        void clearMembers();
+        void removeMember(int memberId);      
+};
+#endif
