@@ -18,4 +18,6 @@ not a leader or a manager change status to resolved
 17: edit, delete task is deleted when delete project
 18: edit, delete task outside scope
 19: check member is member, leader is leader
-11: delete issue(PENDING)
+20: delete project manager
+21: project manager delete another manager's project
+20: delete issue(NOTHING)

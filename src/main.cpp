@@ -19,8 +19,8 @@ int main(int argc, char* argv[]){
     
     std::string filename="test/input/";
     std::string inputFileName=argv[1];
-    std::ifstream input(filename+inputFileName);
-    //std::ifstream input(inputFileName);
+    //std::ifstream input(filename+inputFileName);
+    std::ifstream input(inputFileName);
     std::map<int,Project*>projects;
     std::map<int,User*>users;
     std::map<int,Issue*>issues;
@@ -50,6 +50,7 @@ int main(int argc, char* argv[]){
             if(line==""){
                 continue;
             }
+            //std::cout<<line<<std::endl;
             readDirective(inputFileName,line,projects,users,tasks,issues,lineNumber);
             lineNumber++;
         }
@@ -59,15 +60,16 @@ int main(int argc, char* argv[]){
 void SetDate(std::string date,int lineNumber,std::map<int,Project*>projects,std::map<int,User*>users,std::map<int,Task*>tasks,std::map<int,Issue*>issues){
     if(!isDateValid(date)){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return ;
+        exit(0);
     }
     std::map<int, Issue*>::iterator i;
     for (i = issues.begin(); i != issues.end(); i++)
     {
-        if(i->second->getStatus()!=IssueStatus::resolved){
-            std::string taskEndTime=tasks[i->second->getTaskId()]->getEndTime();
+        Issue *currentIssue=i->second;
+        if(currentIssue->getStatus()!=IssueStatus::resolved){
+            std::string taskEndTime=tasks[currentIssue->getTaskId()]->getEndTime();
             if(compareDate(taskEndTime,date)==-1){
-                i->second->setStatus(IssueStatus::expired);
+                currentIssue->setStatus(IssueStatus::expired);
             }
         }
     }
@@ -97,48 +99,54 @@ void CreateReport(std::string inputFileName,std::map<int,Project*>projects,std::
     issueStatus[IssueStatus::resolved]="resolved";
     std::string numberTestCase=inputFileName.substr(5,2);
     
-    std::ofstream output("test/output/output"+numberTestCase+"_"+globalDate+".txt");
-    //std::ofstream output("Report_"+globalDate+".txt");
+    //std::ofstream output("test/output/output"+numberTestCase+"_"+globalDate+".txt");
+    std::ofstream output("Report_"+globalDate+".txt");
     std::map<int, Project*>::iterator i;
-    
     for (i = projects.begin(); i != projects.end(); i++)
     {
         
-        output<<"PROJECT_START "+i->second->getName()+"\n";
-        output<<"STATUS "+projectStatus[i->second->getStatus()]+"\n";
-        output<<"START_TIME "+i->second->getStartTime()+"\n";
-        output<<"END_TIME "+i->second->getEndTime()+"\n";
-        output<<"MANAGER "+users[i->second->getProjectManager()]->getFullName()+"\n";
+        Project *currentProject=i->second;
         
-        for(int j=0;j<i->second->getLeaders().size();j++){
-            output<<"LEADER "+users[i->second->getLeaders()[j]]->getFullName()+"\n";
-            
+        output<<"PROJECT_START "+currentProject->getName()+"\n";
+        output<<"STATUS "+projectStatus[currentProject->getStatus()]+"\n";
+        output<<"START_TIME "+currentProject->getStartTime()+"\n";
+        output<<"END_TIME "+currentProject->getEndTime()+"\n";
+        output<<"MANAGER "+users[currentProject->getProjectManager()]->getFullName()+"\n";
+        
+        for(int j=0;j<currentProject->getLeaders().size();j++){
+            output<<"LEADER "+users[currentProject->getLeaders()[j]]->getFullName()+"\n";
         }
-        for(int j=0;j<i->second->getMembers().size();j++){
-            output<<"MEMBER "+users[i->second->getMembers()[j]]->getFullName()+"\n";
+        
+        for(int j=0;j<currentProject->getMembers().size();j++){
+            output<<"MEMBER "+users[currentProject->getMembers()[j]]->getFullName()+"\n";
         }
-        std::vector<int>projectTasks=i->second->getListTasks();
+        
+        std::vector<int>projectTasks=currentProject->getListTasks();
         for(int j=0;j<projectTasks.size();j++){
-            output<<"TASK_START "+tasks[projectTasks[j]]->getName()+"\n";
-            output<<"STATUS "+taskStatus[tasks[projectTasks[j]]->getStatus()]+"\n";
-            output<<"CREATED_BY "+std::to_string(tasks[projectTasks[j]]->getCreatedBy())+"\n";
-            output<<"START_TIME "+tasks[projectTasks[j]]->getStartTime()+"\n";
-            output<<"END_TIME "+tasks[projectTasks[j]]->getEndTime()+"\n";
-            std::vector<int>listTaskMembers=tasks[projectTasks[j]]->getMembers();
+            Task *currentTask=tasks[projectTasks[j]];
+            output<<"TASK_START "+currentTask->getName()+"\n";
+            output<<"STATUS "+taskStatus[currentTask->getStatus()]+"\n";
+            output<<"CREATED_BY "+std::to_string(currentTask->getCreatedBy())+"\n";
+            output<<"START_TIME "+currentTask->getStartTime()+"\n";
+            output<<"END_TIME "+currentTask->getEndTime()+"\n";
+            std::vector<int>listTaskMembers=currentTask->getMembers();
             for(int k=0;k<listTaskMembers.size();k++){
                 output<<"MEMBER "+users[listTaskMembers[k]]->getFullName()+"\n";
             }
-            std::vector<int>listTaskIssues=tasks[projectTasks[j]]->getIssues();
+            std::vector<int>listTaskIssues=currentTask->getIssues();
+            
             for(int k=0;k<listTaskIssues.size();k++){
-                output<<"ISSUE_START "+issues[listTaskIssues[k]]->getName()+"\n";
-                output<<"STATUS "+issueStatus[issues[listTaskIssues[k]]->getStatus()]+"\n";
-                output<<"CREATED_BY "+std::to_string(issues[listTaskIssues[k]]->getCreatedBy())+"\n";
+                Issue *currentIssue=issues[listTaskIssues[k]];
+                output<<"ISSUE_START "+currentIssue->getName()+"\n";
+                output<<"STATUS "+issueStatus[currentIssue->getStatus()]+"\n";
+                output<<"CREATED_BY "+std::to_string(currentIssue->getCreatedBy())+"\n";
 
-                std::vector<int>listIssueMembers=issues[listTaskIssues[k]]->getMembers();
+                std::vector<int>listIssueMembers=currentIssue->getMembers();
                 for(int h=0;h<listIssueMembers.size();h++){
                     output<<"MEMBER "+users[listIssueMembers[h]]->getFullName()+"\n";
                 }
-                output<<"DESCRIPTION "+issues[listTaskIssues[k]]->getDescription()+"\n";
+                
+                output<<"DESCRIPTION "+currentIssue->getDescription()+"\n";
                 output<<"ISSUE_END\n";
             }
             output<<"TASK_END\n";
@@ -153,7 +161,7 @@ void CreateReport(std::string inputFileName,std::map<int,Project*>projects,std::
 };
 void readDirective(std::string inputFileName,std::string directive,std::map<int,Project*>&projects,std::map<int,User*>&users,std::map<int,Task*>&tasks,std::map<int,Issue*>&issues,int lineNumber){
     std::vector<std::string>keyword;
-    customSplit(directive,' ',keyword);
+    splitDirective(directive,' ',keyword);
     if (keyword[0]=="create_report") {
         CreateReport(inputFileName,projects,users,tasks,issues);
     } else if (keyword[0]=="set_date"){
@@ -169,7 +177,7 @@ void readDirective(std::string inputFileName,std::string directive,std::map<int,
             CreateProject(keyword,projects,users,tasks,issues,lineNumber);
         }else{
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
     } else if (keyword[0]=="edit"){
         if(keyword[1]=="task"){
@@ -194,34 +202,38 @@ void readDirective(std::string inputFileName,std::string directive,std::map<int,
             DeleteProject(keyword,projects,users,tasks,issues,lineNumber);
         }else{
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
     }else{
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return;
+        exit(0);
     }
+    // std::cout<<directive<<std::endl;
+    // std::map<int, User*>::iterator user;
+    // for(user=users.begin();user!=users.end();user++){
+    //     std::cout<<user->first<<" "<<user->second->getFullName()<<std::endl;
+    // }
     
-}
-
+};
 void CreateUser(std::vector<std::string>information,std::map<int,Project*>&projects,std::map<int,User*>&users,std::map<int,Task*>&tasks,std::map<int,Issue*>&issues,int lineNumber){
     User *newUser= new User();
     if(information.size()%2!=0){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
         delete newUser;
-        return; 
+        exit(0); 
     }
     for(int i=2;i<information.size();i+=2){
         if(information[i]=="--by"){
             if(!isNumber(information[i+1])){//value is not a number
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                 delete newUser;
-                return;
+                exit(0);
             }else{
                 int id=std::stoi(information[i+1]);
                 if(!users.count(id)){
                     std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                     delete newUser;
-                    return;
+                    exit(0);
                 }
                 newUser->setCreatedBy(id);
             }
@@ -233,69 +245,77 @@ void CreateUser(std::vector<std::string>information,std::map<int,Project*>&proje
                 if(users[newUser->getCreatedBy()]->getRole()>=userRoles[information[i+1]]){
                     std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                     delete newUser;
-                    return;
+                    exit(0);
                 }
             }
             
             if(information[i+1]!="member"&&information[i+1]!="leader"&&information[i+1]!="project_manager"){
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                 delete newUser;
-                return;
+                exit(0);
             }
             newUser->setRole(userRoles[information[i+1]]);
         }else{
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
             delete newUser;
-            return;
+            exit(0);
         }
     }
     newUser->setID(numberOfUser+1);
-    
     users[numberOfUser+1]=newUser;
+    // std::cout<<numberOfUser+1<<std::endl;
+    // std::cout<<newUser->getFullName()<<std::endl;
+    // std::cout<<newUser<<std::endl;
+    // std::map<int, User*>::iterator i;
+    
+    // for (i = users.begin(); i != users.end(); i++)
+    // {
+    //     std::cout<<i->first<<" "<<currentProject<<std::endl;
+    // }
     numberOfUser++;
 };
 void EditUser(std::vector<std::string>information,std::map<int,Project*>&projects,std::map<int,User*>&users,std::map<int,Task*>&tasks,std::map<int,Issue*>&issues,int lineNumber){
     if(information.size()<6||information.size()%2!=0){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }
     
     if(information[2]!="--by"){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }else{
         if(!isNumber(information[3])){//value is not a number
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
         if(!users.count(std::stoi(information[3]))){
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
     }
     if(information[4]!="--id"){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }else{
         if(!isNumber(information[5])){//value is not a number
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
         if(!users.count(std::stoi(information[5]))){
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
     }
     int editor=std::stoi(information[3]);
     int editedUser=std::stoi(information[5]);
     if(users[editor]->getRole()>users[std::stoi(information[5])]->getRole()){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return;
+        exit(0);
     }
     if(users[editor]->getRole()==Roles::member){//member edit another member
         if(editor!=editedUser){
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
     }
     for(int i=6;i<information.size();i+=2){
@@ -307,38 +327,38 @@ void EditUser(std::vector<std::string>information,std::map<int,Project*>&project
 void DeleteUser(std::vector<std::string>information,std::map<int,Project*>&projects,std::map<int,User*>&users,std::map<int,Task*>&tasks,std::map<int,Issue*>&issues,int lineNumber){
     if(information.size()!=6){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }
 
     if(information[2]!="--by"){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }else{
         if(!isNumber(information[3])){//value is not a number
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
         if(!users.count(std::stoi(information[3]))){
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
     }
     if(information[4]!="--id"){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }else{
         if(!isNumber(information[5])){//value is not a number
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
         if(!users.count(std::stoi(information[5]))){
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
     }
     if(users[std::stoi(information[3])]->getRole()>=users[std::stoi(information[5])]->getRole()){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return;
+        exit(0);
     }else{
         int userId=std::stoi(information[5]);
         User *user=users[userId];
@@ -362,40 +382,41 @@ void DeleteUser(std::vector<std::string>information,std::map<int,Project*>&proje
 void CreateTask(std::vector<std::string>information,std::map<int,Project*>&projects,std::map<int,User*>&users,std::map<int,Task*>&tasks,std::map<int,Issue*>&issues,int lineNumber){
     if(information.size()!=14){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }
     Task *task=new Task();
     task->setStatus(TaskStatus::initialized);
     int projectId=-1;
+    int taskId=numberOfTask+1;
     if(information[2]=="--by"){
         if(!isNumber(information[3])){//value is not a number
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
             delete task;
-            return;
+            exit(0);
         }
         if(!users.count(std::stoi(information[3]))){
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
             delete task;
-            return;
+            exit(0);
         }
         task->setCreatedBy(std::stoi(information[3])); 
     }
     if(users[std::stoi(information[3])]->getRole()!=Roles::leader&&users[std::stoi(information[3])]->getRole()!=Roles::project_manager){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
         delete task;
-        return;
+        exit(0);
     }
     for(int i=4;i<information.size();i+=2){
          if(information[i]=="--project_id"){
             if(!isNumber(information[i+1])){//value is not a number
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                 delete task;
-                return;
+                exit(0);
             }
             if(!projects.count(std::stoi(information[i+1]))){
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                 delete task;
-                return;
+                exit(0);
             }
             projectId=std::stoi(information[i+1]);
             if(task->getCreatedBy()!=projects[projectId]->getProjectManager()){//leader of another project create task to this project
@@ -409,7 +430,7 @@ void CreateTask(std::vector<std::string>information,std::map<int,Project*>&proje
                 if(!flag){
                     std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                     delete task;
-                    return;
+                    exit(0);
                 }
             }
             task->setProjectId(projectId);
@@ -419,19 +440,19 @@ void CreateTask(std::vector<std::string>information,std::map<int,Project*>&proje
             if(!isDateValid(information[i+1])){
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                 delete task;
-                return;
+                exit(0);
             }
             task->setStartTime(information[i+1]);
         }else if(information[i]=="--end_time"){
             if(!isDateValid(information[i+1])){
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                 delete task;
-                return;
+                exit(0);
             }
             task->setEndTime(information[i+1]);
         }else if(information[i]=="--members"){
             std::vector<std::string>memberIds;
-            customSplit(information[i+1],',',memberIds);
+            splitDirective(information[i+1],',',memberIds);
             Project *project=projects[projectId];
             std::vector<int>members=project->getMembers();
             for(int i=0;i<memberIds.size();i++){
@@ -440,7 +461,7 @@ void CreateTask(std::vector<std::string>information,std::map<int,Project*>&proje
                     if(!isNumber(memberIds[i])){
                         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                         delete task;
-                        return;
+                        exit(0);
                     }
                     if(members[j]==std::stoi(memberIds[i])){
                         flag=true;
@@ -450,72 +471,73 @@ void CreateTask(std::vector<std::string>information,std::map<int,Project*>&proje
                 if(!flag){
                     std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                     delete task;
-                    return;
+                    exit(0);
                 }
             }
             for(int i=0;i<memberIds.size();i++){
                 if(!isNumber(memberIds[i])){
                     std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                     delete task;
-                    return;
+                    exit(0);
                 }else{
                     if(!users.count(std::stoi(memberIds[i]))){
                         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                         delete task;
-                        return;
+                        exit(0);
                     }
                     task->addMember(std::stoi(memberIds[i]));
+                    users[std::stoi(memberIds[i])]->addTask(taskId);
                 }
             }
             
         }else{
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
             delete task;
-            return; 
+            exit(0); 
         }
     }
-    task->setID(numberOfTask+1);
-    tasks[numberOfTask+1]=task;
-    projects[projectId]->addTask(numberOfTask+1);
+    task->setID(taskId);
+    tasks[taskId]=task;
+    projects[projectId]->addTask(taskId);
     numberOfTask++;
 };
 void EditTask(std::vector<std::string>information,std::map<int,Project*>&projects,std::map<int,User*>&users,std::map<int,Task*>&tasks,std::map<int,Issue*>&issues,int lineNumber){
     if(information.size()<6||information.size()%2!=0){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }
     
     if(information[2]!="--by"){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }else{
         if(!isNumber(information[3])){//value is not a number
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
         if(!users.count(std::stoi(information[3]))){
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
     }
     if(information[4]!="--id"){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }else{
         if(!isNumber(information[5])){//value is not a number
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
         if(!tasks.count(std::stoi(information[5]))){
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
     }
     int userId=std::stoi(information[3]);
     int taskId=std::stoi(information[5]);
     if(users[userId]->getRole()!=Roles::leader&&users[userId]->getRole()!=Roles::project_manager){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return;
+        exit(0);
     }
     
     Task *editTask=tasks[taskId];
@@ -532,7 +554,7 @@ void EditTask(std::vector<std::string>information,std::map<int,Project*>&project
         }
         if(!flag){
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
     }
     for(int i=6;i<information.size();i+=2){
@@ -541,13 +563,13 @@ void EditTask(std::vector<std::string>information,std::map<int,Project*>&project
         }else if(information[i]=="--start_time"){
             if(!isDateValid(information[i+1])){
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                return;
+                exit(0);
             }
             editTask->setStartTime(information[i+1]);
         }else if(information[i]=="--end_time"){
             if(!isDateValid(information[i+1])){
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                return;
+                exit(0);
             }
             editTask->setEndTime(information[i+1]);
         }else if(information[i]=="--status"){
@@ -555,12 +577,16 @@ void EditTask(std::vector<std::string>information,std::map<int,Project*>&project
                 editTask->setStatus(taskStatus[information[i+1]]);
             }else{
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                return;
+                exit(0);
             }
         }else if(information[i]=="--members"){
+            std::vector<int>taskMembers=editTask->getMembers();
+            for(int i=0;i<taskMembers.size();i++){
+                users[taskMembers[i]]->removeTask(taskId);
+            }
             editTask->clearMembers();
             std::vector<std::string>memberIds;
-            customSplit(information[i+1],',',memberIds);
+            splitDirective(information[i+1],',',memberIds);
             Project *project=projects[projectId];
             std::vector<int>members=project->getMembers();
             for(int i=0;i<memberIds.size();i++){
@@ -568,7 +594,7 @@ void EditTask(std::vector<std::string>information,std::map<int,Project*>&project
                 for(int j=0;j<members.size();j++){
                     if(!isNumber(memberIds[i])){
                         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                        return;
+                        exit(0);
                     }
                     if(members[j]==std::stoi(memberIds[i])){
                         flag=true;
@@ -577,65 +603,66 @@ void EditTask(std::vector<std::string>information,std::map<int,Project*>&project
                 }
                 if(!flag){
                     std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                    return;
+                    exit(0);
                 }
             }
             for(int i=0;i<memberIds.size();i++){
                 if(!isNumber(memberIds[i])){
                     std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                    return;
+                    exit(0);
                 }else{
                     if(!users.count(std::stoi(memberIds[i]))){
                         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                        return;
+                        exit(0);
                     }
                     editTask->addMember(std::stoi(memberIds[i]));
+                    users[std::stoi(memberIds[i])]->addTask(taskId);
                 }
             }
             
         }else{
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return; 
+            exit(0); 
         }
     }
 };
 void DeleteTask(std::vector<std::string>information,std::map<int,Project*>&projects,std::map<int,User*>&users,std::map<int,Task*>&tasks,std::map<int,Issue*>&issues,int lineNumber){
     if(information.size()!=6){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }
 
     if(information[2]!="--by"){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }else{
         if(!isNumber(information[3])){//value is not a number
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
         if(!users.count(std::stoi(information[3]))){
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
     }
     if(information[4]!="--id"){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }else{
         if(!isNumber(information[5])){//value is not a number
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
         if(!tasks.count(std::stoi(information[5]))){
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
     }
     
     int userId=std::stoi(information[3]);
     if(users[std::stoi(information[3])]->getRole()!=Roles::leader&&users[std::stoi(information[3])]->getRole()!=Roles::project_manager){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return;
+        exit(0);
     }else{
         int taskId=std::stoi(information[5]);
         Task *task=tasks[taskId];
@@ -652,7 +679,7 @@ void DeleteTask(std::vector<std::string>information,std::map<int,Project*>&proje
             }
             if(!flag){
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                return;
+                exit(0);
             }
         }
         project->removeTask(taskId);
@@ -674,37 +701,48 @@ void DeleteTask(std::vector<std::string>information,std::map<int,Project*>&proje
 void CreateIssue(std::vector<std::string>information,std::map<int,Project*>&projects,std::map<int,User*>&users,std::map<int,Task*>&tasks,std::map<int,Issue*>&issues,int lineNumber){
     if(information.size()!=12){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }
     Issue *issue=new Issue();
     issue->setStatus(IssueStatus::found);
     int taskId=-1;
     int createUserId=std::stoi(information[3]);
+    int issueId=numberOfIssue+1;
     for(int i=2;i<information.size();i+=2){
         if(information[i]=="--by"){
             if(!isNumber(information[i+1])){//value is not a number
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                 delete issue;
-                return;
+                exit(0);
             }
             if(!users.count(std::stoi(information[i+1]))){
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                 delete issue;
-                return;
+                exit(0);
             }
             issue->setCreatedBy(std::stoi(information[i+1]));
         }else if(information[i]=="--task_id"){
             if(!isNumber(information[i+1])){//value is not a number
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                 delete issue;
-                return;
+                exit(0);
             }
             if(!tasks.count(std::stoi(information[i+1]))){
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                 delete issue;
-                return;
+                exit(0);
             }
             taskId=std::stoi(information[i+1]);
+            int userId=issue->getCreatedBy();
+            Task *task=tasks[taskId];
+            Project *project=projects[task->getProjectId()];
+            if(project->getProjectManager()!=userId){
+                if(!isProjectHaveUser(userId,project->getLeaders(),project->getMembers())){
+                    std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
+                    delete issue;
+                    exit(0);
+                };
+            }
             issue->setTaskId(taskId);
         }else if(information[i]=="--name"){
             issue->setName(information[i+1]);
@@ -712,7 +750,7 @@ void CreateIssue(std::vector<std::string>information,std::map<int,Project*>&proj
             issue->setDescription(information[i+1]);
         }else if(information[i]=="--members"){
             std::vector<std::string>memberIds;
-            customSplit(information[i+1],',',memberIds);
+            splitDirective(information[i+1],',',memberIds);
             Task *task=tasks[taskId];
             std::vector<int>members=task->getMembers();
             for(int i=0;i<memberIds.size();i++){
@@ -721,7 +759,7 @@ void CreateIssue(std::vector<std::string>information,std::map<int,Project*>&proj
                     if(!isNumber(memberIds[i])){
                         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                         delete issue;
-                        return;
+                        exit(0);
                     }
                     if(members[j]==std::stoi(memberIds[i])){
                         flag=true;
@@ -731,66 +769,67 @@ void CreateIssue(std::vector<std::string>information,std::map<int,Project*>&proj
                 if(!flag){
                     std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                     delete issue;
-                    return;
+                    exit(0);
                 }
             }
             for(int i=0;i<memberIds.size();i++){
                 if(!isNumber(memberIds[i])){
                     std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                     delete issue;
-                    return;
+                    exit(0);
                 }else{
                     if(!users.count(std::stoi(memberIds[i]))){
                         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                         delete issue;
-                        return;
+                        exit(0);
                     }
                     issue->addMember(std::stoi(memberIds[i]));
+                    users[std::stoi(memberIds[i])]->addIssue(issueId);
                 }
             }
             
         }else{
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
             delete issue;
-            return; 
+            exit(0); 
         }
     }
     
-    issue->setID(numberOfIssue+1);
-    issues[numberOfIssue+1]=issue;
-    tasks[taskId]->addIssue(numberOfIssue+1);
+    issue->setID(issueId);
+    issues[issueId]=issue;
+    tasks[taskId]->addIssue(issueId);
     numberOfIssue++;
 
 };
 void EditIssue(std::vector<std::string>information,std::map<int,Project*>&projects,std::map<int,User*>&users,std::map<int,Task*>&tasks,std::map<int,Issue*>&issues,int lineNumber){
     if(information.size()<6 || information.size()%2!=0){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }
     if(information[2]!="--by"){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }else{
         if(!isNumber(information[3])){//value is not a number
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
         if(!users.count(std::stoi(information[3]))){
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
     }
     if(information[4]!="--id"){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }else{
         if(!isNumber(information[5])){//value is not a number
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
         if(!issues.count(std::stoi(information[5]))){
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
     }
     int editUser=std::stoi(information[3]);
@@ -816,7 +855,7 @@ void EditIssue(std::vector<std::string>information,std::map<int,Project*>&projec
             }
             if(!flagInside){
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                return;
+                exit(0);
             }
         }
     }
@@ -830,25 +869,26 @@ void EditIssue(std::vector<std::string>information,std::map<int,Project*>&projec
                 if(information[i+1]=="resolved"){
                     if(users[editUser]->getRole()!=Roles::leader&&users[editUser]->getRole()!=Roles::project_manager){
                         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                        return;
+                        exit(0);
                     }
                 }
                 editIssue->setStatus(issueStatus[information[i+1]]);
             }else{
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                return;
+                exit(0);
             }
         }else if(information[i]=="--members"){
+            editIssue->removeMemberReference(users);
             editIssue->clearMembers();
             std::vector<std::string>memberIds;
-            customSplit(information[i+1],',',memberIds);
+            splitDirective(information[i+1],',',memberIds);
             std::vector<int>members=task->getMembers();
             for(int i=0;i<memberIds.size();i++){
                 bool flagInside2=false;
                 for(int j=0;j<members.size();j++){
                     if(!isNumber(memberIds[i])){
                         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                        return;
+                        exit(0);
                     }
                     if(members[j]==std::stoi(memberIds[i])){
                         flagInside2=true;
@@ -857,25 +897,26 @@ void EditIssue(std::vector<std::string>information,std::map<int,Project*>&projec
                 }
                 if(!flagInside2){
                     std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                    return;
+                    exit(0);
                 }
             }
             for(int i=0;i<memberIds.size();i++){
                 if(!isNumber(memberIds[i])){
                     std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                    return;
+                    exit(0);
                 }else{
                     if(!users.count(std::stoi(memberIds[i]))){
                         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                        return;
+                        exit(0);
                     }
                     editIssue->addMember(std::stoi(memberIds[i]));
+                    users[std::stoi(memberIds[i])]->addIssue(issueId);
                 }
             }
             
         }else{
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return; 
+            exit(0); 
         }
     }
     
@@ -883,33 +924,33 @@ void EditIssue(std::vector<std::string>information,std::map<int,Project*>&projec
 void DeleteIssue(std::vector<std::string>information,std::map<int,Project*>&projects,std::map<int,User*>&users,std::map<int,Task*>&tasks,std::map<int,Issue*>&issues,int lineNumber){
     if(information.size()!=6){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }
 
     if(information[2]!="--by"){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }else{
         if(!isNumber(information[3])){//value is not a number
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
         if(!users.count(std::stoi(information[3]))){
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
     }
     if(information[4]!="--id"){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }else{
         if(!isNumber(information[5])){//value is not a number
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
         if(!issues.count(std::stoi(information[5]))){
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
     }
     
@@ -917,34 +958,32 @@ void DeleteIssue(std::vector<std::string>information,std::map<int,Project*>&proj
     Issue *issue=issues[issueId];
     int taskId=issue->getTaskId();
     tasks[taskId]->removeIssue(issueId);
-    std::vector<int>issueMembers=issue->getMembers();
-    for(int i=0;i<issueMembers.size();i++){
-        users[issueMembers[i]]->removeIssue(issueId);
-    }
+    issue->removeMemberReference(users);
     delete issues[std::stoi(information[5])];
     issues.erase(std::stoi(information[5]));
 };
 void CreateProject(std::vector<std::string>information,std::map<int,Project*>&projects,std::map<int,User*>&users,std::map<int,Task*>&tasks,std::map<int,Issue*>&issues,int lineNumber){
     if(information.size()!=14){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }
     Project *project=new Project();
     project->setStatus(ProjectStatus::starting);
+    int projectId=numberOfProject+1;
     if(information[2]!="--by"){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
         delete project;
-        return; 
+        exit(0); 
     }else{
         if(!isNumber(information[3])){//value is not a number
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
             delete project;
-            return;
+            exit(0);
         }
         if(!users.count(std::stoi(information[3]))){
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
             delete project;
-            return;
+            exit(0);
         }
         int projectManagerId=std::stoi(information[3]);
         project->setProjectManager(projectManagerId);
@@ -952,7 +991,7 @@ void CreateProject(std::vector<std::string>information,std::map<int,Project*>&pr
     if(users[std::stoi(information[3])]->getRole()!=Roles::project_manager){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
         delete project;
-        return;
+        exit(0);
     }
     for(int i=4;i<information.size();i+=2){
         if(information[i]=="--name"){
@@ -961,117 +1000,119 @@ void CreateProject(std::vector<std::string>information,std::map<int,Project*>&pr
             if(!isDateValid(information[i+1])){
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                 delete project;
-                return;
+                exit(0);
             }
             project->setStartTime(information[i+1]);
         }else if(information[i]=="--end_time"){
             if(!isDateValid(information[i+1])){
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                 delete project;
-                return;
+                exit(0);
             }
             project->setEndTime(information[i+1]);
         }else if(information[i]=="--members"){
             std::vector<std::string>memberIds;
-            customSplit(information[i+1],',',memberIds);
+            splitDirective(information[i+1],',',memberIds);
             if(memberIds.size()>5){
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                 delete project;
-                return;
+                exit(0);
             }
             for(int i=0;i<memberIds.size();i++){
                 if(!isNumber(memberIds[i])){
                     std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                     delete project;
-                    return;
+                    exit(0);
                 }else{
                     if(!users.count(std::stoi(memberIds[i]))){
                         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                         delete project;
-                        return;
+                        exit(0);
                     }
                     if(users[std::stoi(memberIds[i])]->getRole()!=Roles::member){
                         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                         delete project;
-                        return;
+                        exit(0);
                     }
                     project->addMember(std::stoi(memberIds[i]));
+                    users[std::stoi(memberIds[i])]->addProject(projectId);
                 }
             }
             
         }else if(information[i]=="--leaders"){
             std::vector<std::string>memberIds;
-            customSplit(information[i+1],',',memberIds);
+            splitDirective(information[i+1],',',memberIds);
             if(memberIds.size()>100){
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                 delete project;
-                return;
+                exit(0);
             }
             for(int i=0;i<memberIds.size();i++){
                 if(!isNumber(memberIds[i])){
                     std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                     delete project;
-                    return;
+                    exit(0);
                 }else{
                     if(!users.count(std::stoi(memberIds[i]))){
                         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                         delete project;
-                        return;
+                        exit(0);
                     }
                     if(users[std::stoi(memberIds[i])]->getRole()!=Roles::leader){
                         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                         delete project;
-                        return;
+                        exit(0);
                     }
                     project->addLeader(std::stoi(memberIds[i]));
+                    users[std::stoi(memberIds[i])]->addProject(projectId);
                 }
             }
         }else{
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
             delete project;
-            return; 
+            exit(0); 
         }
     }
-    project->setID(numberOfProject+1);
-    projects[numberOfProject+1]=project;
+    project->setID(projectId);
+    projects[projectId]=project;
     numberOfProject++;
 };
 void EditProject(std::vector<std::string>information,std::map<int,Project*>&projects,std::map<int,User*>&users,std::map<int,Task*>&tasks,std::map<int,Issue*>&issues,int lineNumber){
     if(information.size()<6 || information.size()%2!=0){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }
     if(information[2]!="--by"){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }else{
         if(!isNumber(information[3])){//value is not a number
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
         if(!users.count(std::stoi(information[3]))){
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
     }
     if(information[4]!="--id"){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }else{
         if(!isNumber(information[5])){//value is not a number
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
         if(!projects.count(std::stoi(information[5]))){
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
     }
     int projectId=std::stoi(information[5]);
     Project *project=projects[projectId];
     if(users[std::stoi(information[3])]->getRole()!=Roles::project_manager){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return;
+        exit(0);
     }
     for(int i=6;i<information.size();i+=2){
         if(information[i]=="--name"){
@@ -1079,13 +1120,13 @@ void EditProject(std::vector<std::string>information,std::map<int,Project*>&proj
         }else if(information[i]=="--start_time"){
             if(!isDateValid(information[i+1])){
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                return;
+                exit(0);
             }
             project->setStartTime(information[i+1]);
         }else if(information[i]=="--end_time"){
             if(!isDateValid(information[i+1])){
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                return;
+                exit(0);
             }
             project->setEndTime(information[i+1]);
         }else if(information[i]=="--status"){
@@ -1093,63 +1134,67 @@ void EditProject(std::vector<std::string>information,std::map<int,Project*>&proj
                 project->setStatus(projectStatus[information[i+1]]);
             }else{
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                return;
+                exit(0);
             }
         }else if(information[i]=="--members"){
+            project->removeMemberReference(users);
             project->clearMembers();
             std::vector<std::string>memberIds;
-            customSplit(information[i+1],',',memberIds);
+            splitDirective(information[i+1],',',memberIds);
             if(memberIds.size()>100){
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                return;
+                exit(0);
             }
             for(int i=0;i<memberIds.size();i++){
                 if(!isNumber(memberIds[i])){
                     std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                    return;
+                    exit(0);
                 }else{
                     if(!users.count(std::stoi(memberIds[i]))){
                         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                        return;
+                        exit(0);
                     }
                     if(users[std::stoi(memberIds[i])]->getRole()!=Roles::member){
                         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                         delete project;
-                        return;
+                        exit(0);
                     }
                     project->addMember(std::stoi(memberIds[i]));
+                    users[std::stoi(memberIds[i])]->addProject(projectId);
                 }
             }
             
         }else if(information[i]=="--leaders"){
+            project->removeLeaderReference(users);
             project->clearLeaders();
             std::vector<std::string>memberIds;
-            customSplit(information[i+1],',',memberIds);
+            splitDirective(information[i+1],',',memberIds);
             if(memberIds.size()>5){
                 std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                return;
+                exit(0);
             }
             for(int i=0;i<memberIds.size();i++){
                 if(!isNumber(memberIds[i])){
                     std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                    return;
+                    exit(0);
                 }else{
                     if(!users.count(std::stoi(memberIds[i]))){
                         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-                        return;
+                        exit(0);
                     }
                     if(users[std::stoi(memberIds[i])]->getRole()!=Roles::leader){
                         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                         delete project;
-                        return;
+                        exit(0);
                     }
                     project->addLeader(std::stoi(memberIds[i]));
+                    users[std::stoi(memberIds[i])]->addProject(projectId);
                 }
             }
             
         }else{
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return; 
+            exit(0); 
         }
     }
 
@@ -1157,54 +1202,49 @@ void EditProject(std::vector<std::string>information,std::map<int,Project*>&proj
 void DeleteProject(std::vector<std::string>information,std::map<int,Project*>&projects,std::map<int,User*>&users,std::map<int,Task*>&tasks,std::map<int,Issue*>&issues,int lineNumber){
     if(information.size()!=6){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }
     
     if(information[2]!="--by"){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }else{
         if(!isNumber(information[3])){//value is not a number
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
         if(!users.count(std::stoi(information[3]))){
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
     }
     if(information[4]!="--id"){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return; 
+        exit(0); 
     }else{
         if(!isNumber(information[5])){//value is not a number
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
         if(!projects.count(std::stoi(information[5]))){
             std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-            return;
+            exit(0);
         }
     }
     int projectId=std::stoi(information[5]);
     int userId=std::stoi(information[3]);
+    Project *deletedProject=projects[projectId];
     if(users[userId]->getRole()!=Roles::project_manager){
         std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
-        return;
+        exit(0);
     }else{
-        std::vector<int>projectTasks=projects[projectId]->getListTasks();
-        for(int i=0;i<projectTasks.size();i++){
-            delete tasks[projectTasks[i]];
-            tasks.erase(projectTasks[i]);
+        if(userId!=deletedProject->getProjectManager()){
+            std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
+            exit(0);
         }
-        std::vector<int>projectLeaders=projects[projectId]->getMembers();
-        for(int i=0;i<projectLeaders.size();i++){
-            users[projectLeaders[i]]->removeProject(projectId);
-        }
-        std::vector<int>projectMembers=projects[projectId]->getLeaders();
-        for(int i=0;i<projectMembers.size();i++){
-            users[projectMembers[i]]->removeProject(projectId);
-        }
+        deletedProject->removeTaskReference(tasks);
+        deletedProject->removeLeaderReference(users);
+        deletedProject->removeMemberReference(users);
         delete projects[projectId];
         projects.erase(projectId);
     }

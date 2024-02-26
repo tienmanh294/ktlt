@@ -6,5 +6,4 @@ MANAGER Manager
 LEADER Leader1
 LEADER Leader2
 MEMBER Member2
-MEMBER Member4
 PROJECT_END

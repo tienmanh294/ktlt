@@ -106,3 +106,22 @@ void Project::removeTask(int taskId){
         this->list_tasks.erase(this->list_tasks.begin()+position,this->list_tasks.begin()+position+1);
     }
 };
+void Project::removeLeaderReference(std::map<int,User*>&users){
+    std::vector<int>projectLeaders=this->getLeaders();
+    for(int i=0;i<projectLeaders.size();i++){
+        users[projectLeaders[i]]->removeProject(this->id);
+    }
+};
+void Project::removeMemberReference(std::map<int,User*>&users){
+    std::vector<int>projectMembers=this->members;
+    for(int i=0;i<projectMembers.size();i++){
+        users[projectMembers[i]]->removeProject(this->id);
+    }
+};
+void Project::removeTaskReference(std::map<int,Task*>&tasks){
+    std::vector<int>projectTasks=this->getListTasks();
+    for(int i=0;i<projectTasks.size();i++){
+        delete tasks[projectTasks[i]];
+        tasks.erase(projectTasks[i]);
+    }
+};

@@ -1,5 +1,7 @@
 #include <vector>
 #include<string>
+#include<map>
+#include "User.h"
 #ifndef ISSUE_H
 #define ISSUE_H
 enum class IssueStatus{
@@ -37,6 +39,7 @@ class Issue{
         void setEndTime(std::string end_time);
         IssueStatus getStatus();
         void setStatus(IssueStatus status);
+        void removeMemberReference(std::map<int,User*>&users);
         int getTaskId();
         void setTaskId(int taskId);
         void addMember(int memberId);

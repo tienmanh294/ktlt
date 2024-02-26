@@ -1,5 +1,8 @@
 #include <vector>
 #include<string>
+#include <map>
+#include "User.h"
+#include "Task.h"
 #ifndef PROJECT_H
 #define PROJECT_H
 enum class ProjectStatus{
@@ -21,6 +24,7 @@ class Project{
         std::string end_time;
         ProjectStatus status;
         std::vector<int> list_tasks;
+        //bien trang thai 
     public:
         int getID();
         void setID(int id);
@@ -49,5 +53,8 @@ class Project{
         void removeLeader(int leaderId);
         void removeMember(int memberId);
         void removeTask(int taskId);
+        void removeLeaderReference(std::map<int,User*>&users);
+        void removeMemberReference(std::map<int,User*>&users);
+        void removeTaskReference(std::map<int,Task*>&tasks);
 };
 #endif

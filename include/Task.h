@@ -1,5 +1,7 @@
 #include <vector>
 #include<string>
+#include<map>
+#include "User.h"
 #ifndef TASK_H
 #define TASK_H
 enum class TaskStatus{

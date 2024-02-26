@@ -1,5 +1,5 @@
 #include "../include/Utils.h"
-void customSplit(std::string str,char separator,std::vector<std::string>&strings) {
+void splitDirective(std::string str,char separator,std::vector<std::string>&strings) {
     std::stringstream ss(str);
  
     while (ss.good()) {
@@ -19,7 +19,7 @@ void readTime(std::string time){
 
 std::vector<std::string> readUsers(std::string list_users){
     std::vector<std::string>users;
-    customSplit(list_users,',',users);
+    splitDirective(list_users,',',users);
     return users;
 }
 
@@ -89,4 +89,18 @@ int compareDate(std::string date1, std::string date2){
     }else{
         return 0;
     }
+};
+
+bool isProjectHaveUser(int userId,std::vector<int>listLeaders,std::vector<int>listMembers){
+    for(int i=0;i<listMembers.size();i++){
+        if(userId==listMembers[i]){
+            return true;
+        }
+    }
+    for(int i=0;i<listLeaders.size();i++){
+        if(userId==listLeaders[i]){
+            return true;
+        }
+    }
+    return false;
 };

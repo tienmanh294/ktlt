@@ -70,3 +70,9 @@ void Issue::removeMember(int memberId){
         this->members.erase(this->members.begin()+position,this->members.begin()+position+1);
     }
 };
+void Issue::removeMemberReference(std::map<int,User*>&users){
+    std::vector<int>issueMembers=this->getMembers();
+    for(int i=0;i<issueMembers.size();i++){
+        users[issueMembers[i]]->removeIssue(this->id);
+    }
+};
