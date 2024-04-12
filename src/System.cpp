@@ -508,7 +508,7 @@ void CreateTask(std::vector<std::string>information,std::map<int,Project*>&proje
                     exit(0);
                 }
             }
-            for(int i=0;i<memberIds.size();i++){//them thong tin
+            for(int i=0;i<memberIds.size();i++){
                 if(!isNumber(memberIds[i])){
                     std::cout<<"Error: Unexpected error in line "<<lineNumber<<std::endl;
                     delete task;

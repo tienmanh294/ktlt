@@ -425,6 +425,57 @@ TEST(EditIssue,Subtest_11){
     ASSERT_TRUE(issues[1]->getDescription()=="createissueABC"); 
        
 }
+TEST(EditIssue,Subtest_Expired){
+    SetupMapping();
+    std::string directive="create user --fullname Leader1 --role leader";
+    std::vector<std::string>information;
+    
+    splitDirective(directive,' ',information);
+    
+    std::map<int,Project*>projects;
+    std::map<int,User*>users;
+    std::map<int,Issue*>issues;
+    std::map<int,Task*>tasks;
+    CreateUser(information,projects,users,tasks,issues,1);
+    ASSERT_TRUE(users.size()==1);
+
+    std::vector<std::string>information1;
+    std::string directive1="create user --fullname Manager";
+    splitDirective(directive1,' ',information1);
+    CreateUser(information1,projects,users,tasks,issues,1);
+    ASSERT_TRUE(users.size()==2);
+
+    std::vector<std::string>information3;
+    std::string directive3="create user --fullname Manager --role member";
+    splitDirective(directive3,' ',information3);
+    CreateUser(information3,projects,users,tasks,issues,1);
+    ASSERT_TRUE(users.size()==3);
+
+    std::vector<std::string>information2;
+    std::string directive2="create project --by 2 --name Project1 --leaders 1 --members 3 --start_time 05012024 --end_time 15012024";
+    splitDirective(directive2,' ',information2);
+    CreateProject(information2,projects,users,tasks,issues,1);
+    ASSERT_TRUE(projects.size()==1);
+    
+    std::vector<std::string>information4;
+    std::string directive4="create task --by 2 --name buttonA --project_id 1 --start_time 05012024 --end_time 15012024 --members 3";
+    splitDirective(directive4,' ',information4);
+    CreateTask(information4,projects,users,tasks,issues,1);
+    ASSERT_TRUE(tasks.size()==1);
+
+    std::vector<std::string>information5;
+    std::string directive5="create issue --by 1 --name issueA --task_id 1 --members 3 --description createissueA";
+    splitDirective(directive5,' ',information5);
+    CreateIssue(information5,projects,users,tasks,issues,1);
+    ASSERT_TRUE(issues.size()==1); 
+    ASSERT_TRUE(issues[1]->getName()=="issueA"); 
+    ASSERT_TRUE(issues[1]->getMembers()[0]==3); 
+    ASSERT_TRUE(issues[1]->getDescription()=="createissueA"); 
+
+     SetDate("16012024",1,projects,users,tasks,issues);
+     ASSERT_TRUE(issues[1]->getStatus()==IssueStatus::expired); 
+       
+}
 TEST(DeleteIssue,Subtest_12){
     SetupMapping();
     std::string directive="create user --fullname Leader1 --role leader";
