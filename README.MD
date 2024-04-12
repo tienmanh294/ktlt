@@ -44,8 +44,8 @@ Running ./main input.txt
 ## Report Require
 - Mô tả dự án
 - Mô tả đề tài
-- Lý do chọn cách thiết kế code: 
-- Mô tả testcase
+- Lý do chọn cách thiết kế code: đặt header vào `include` và phần hiện thực vào `src` và chia các object chính User, Project, Task, Issue thành các file khác nhau để có thể dễ dàng quản lí, thêm bớt các hàm nếu cần. `System.h` và `System.cpp` để có thể thực hiện test. Chia các tính năng chính thành các hàm để thực hiện một cách độc lập không bị ảnh hưởng tới nhau nếu có thay đổi
+- Mô tả testcase: Ở dưới có mô tả
 - Kết quả chạy: all pass
 
 Sửa lại Đại học bách khoa->trường đại học bách khoa
