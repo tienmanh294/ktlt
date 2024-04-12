@@ -1,7 +1,7 @@
 #include "../include/Utils.h"
 void splitDirective(std::string str,char separator,std::vector<std::string>&strings) {
     std::stringstream ss(str);
- 
+    
     while (ss.good()) {
         std::string substr;
         std::getline(ss, substr, separator);
@@ -104,3 +104,14 @@ bool isProjectHaveUser(int userId,std::vector<int>listLeaders,std::vector<int>li
     }
     return false;
 };
+
+bool isDuplicate(std::vector<std::string>information){
+    std::unordered_set<std::string> seenKeyword;
+    for (const std::string& keyword : information) {
+        if (keyword.substr(0,2)=="--" && seenKeyword.count(keyword) > 0) {
+            return true; 
+        }
+        seenKeyword.insert(keyword);
+    }
+    return false;
+}

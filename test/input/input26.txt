@@ -1,0 +1,35 @@
+set_date 01012024
+create user --fullname Manager
+create user --by 1 --fullname Leader2 --role leader
+create user --by 1 --fullname Leader3 --role leader
+create user --by 2 --fullname Member4 --role member
+create user --by 2 --fullname Member5 --role member
+create user --by 3 --fullname Member6 --role member
+create user --by 3 --fullname Member7 --role member
+create user --by 3 --fullname Member8 --role member
+create user --fullname ABC
+create project --by 1 --name Project1 --leaders 2,3 --members 4,5,6,7 --start_time 05012024 --end_time 15012024
+create project --by 1 --name Project2 --leaders 2 --members 4,5,6,8 --start_time 05012024 --end_time 15012024
+edit project --by 1 --id 1 --end_time 31012024
+edit project --by 1 --id 1 --status finished
+set_date 06012024
+create task --by 1 --name buttonA --project_id 1 --members 4,5,7 --start_time 05012024 --end_time 15012024
+create task --by 1 --name buttonA1 --project_id 1 --members 4,5,7 --start_time 05012024 --end_time 15012024
+create task --by 2 --name buttonE --project_id 2 --members 5,6,8 --start_time 05012024 --end_time 15012024
+create task --by 2 --name buttonE1 --project_id 2 --members 5,6,8 --start_time 05012024 --end_time 15012024
+create issue --by 4 --name issueA --task_id 1 --members 4,7 --description createissueA
+create issue --by 4 --name issueA1 --task_id 1 --members 4,7 --description createissueA
+create issue --by 5 --name issueB --task_id 2 --members 5,7 --description createissueB
+create issue --by 5 --name issueB1 --task_id 2 --members 5,7 --description createissueB
+create_report
+set_date 08012024
+edit issue --by 1 --id 1 --status resolved
+edit issue --by 1 --id 2 --status resolved
+edit issue --by 1 --id 3 --status resolved
+edit issue --by 1 --id 4 --status resolved
+edit task --by 1 --id 1 --status done
+edit task --by 1 --id 2 --status done
+edit task --by 1 --id 3 --status done
+edit task --by 1 --id 4 --status done
+edit project --by 1 --id 1 --status finished
+edit project --by 1 --id 2 --status finished

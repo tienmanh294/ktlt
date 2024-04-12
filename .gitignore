@@ -1,0 +1,14 @@
+*.o
+main
+*.cmake
+CMakeCache.txt
+googletest
+bin
+CMakeFiles
+lib
+Testing
+libktlt.a
+MakefileBackup
+unittest/*
+!unittest/UnitTest.cpp
+!unittest/CMakeLists.txt

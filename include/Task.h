@@ -2,6 +2,7 @@
 #include<string>
 #include<map>
 #include "User.h"
+#include "Issue.h"
 #ifndef TASK_H
 #define TASK_H
 enum class TaskStatus{
@@ -47,6 +48,7 @@ class Task{
         void clearIssues();
         void clearMembers();
         void removeIssue(int issueId);
-        void removeMember(int memberId);        
+        void removeMember(int memberId);       
+        bool isIssueResolved( std::map<int,Issue*>issuesReference); 
 };
 #endif

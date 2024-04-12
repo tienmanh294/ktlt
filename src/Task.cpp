@@ -88,3 +88,12 @@ void Task::removeIssue(int issueId){
         this->issues.erase(this->issues.begin()+position,this->issues.begin()+position+1);
     }
 };
+bool Task::isIssueResolved( std::map<int,Issue*>issuesReference){
+    for(int i=0;i<this->issues.size();i++){
+        int issueID=this->issues[i];
+        if(issuesReference[issueID]->getStatus()!=IssueStatus::resolved){
+            return false;
+        }
+    }
+    return true;
+}

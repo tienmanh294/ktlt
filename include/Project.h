@@ -56,5 +56,6 @@ class Project{
         void removeLeaderReference(std::map<int,User*>&users);
         void removeMemberReference(std::map<int,User*>&users);
         void removeTaskReference(std::map<int,Task*>&tasks);
+        bool isTaskDone( std::map<int,Task*>tasksReference);
 };
 #endif

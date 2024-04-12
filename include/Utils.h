@@ -2,6 +2,7 @@
 #include <map>
 #include <string>
 #include <sstream>
+#include <unordered_set>
 #ifndef UTILS_H
 #define UTILS_H
 void splitDirective(std::string str,char separator,std::vector<std::string>&strings);
@@ -11,4 +12,5 @@ bool isNumber(std::string number);
 bool isDateValid(std::string date);
 int compareDate(std::string date1, std::string date2);
 bool isProjectHaveUser(int userId,std::vector<int>listLeaders,std::vector<int>listMembers);
+bool isDuplicate(std::vector<std::string>information);
 #endif

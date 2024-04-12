@@ -1,0 +1,14 @@
+set_date 01012024
+create user --fullname Manager
+create user --by 1 --fullname Leader2 --role leader
+create user --by 1 --fullname Leader3 --role leader
+create user --by 2 --fullname Member4 --role member
+create user --by 2 --fullname Member5 --role member
+create user --by 3 --fullname Member6 --role member
+create user --by 3 --fullname Member7 --role member
+create user --by 3 --fullname Member8 --role leader
+create project --by 1 --name Project2 --leaders 2 --members 4,5,6,7 --start_time 05012024 --end_time 15012024
+edit project --by 1 --id 1 --end_time 31012024
+edit project --by 1 --id 1 --status finished
+set_date 01022024
+create_report

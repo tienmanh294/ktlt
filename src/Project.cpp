@@ -125,3 +125,13 @@ void Project::removeTaskReference(std::map<int,Task*>&tasks){
         tasks.erase(projectTasks[i]);
     }
 };
+
+bool Project::isTaskDone(std::map<int,Task*>tasksReference){
+    for(int i=0;i<this->list_tasks.size();i++){
+        int taskID=this->list_tasks[i];
+        if(tasksReference[taskID]->getStatus()!=TaskStatus::done){
+            return false;
+        }
+    }
+    return true;
+}

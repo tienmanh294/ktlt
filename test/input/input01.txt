@@ -7,7 +7,7 @@ create user --by 2 --fullname Member2 --role member
 create user --by 3 --fullname Member3 --role member
 delete user --by 3 --id 6
 create user --by 3 --fullname Member4 --role member
-create project --by 1 --name Project1 --leaders 2,3 --members 4,5,7 --start_time 05012024 --end_time 15012024
+create project --by 1 --name Project1 --leaders 2,3 --members 4,5 --start_time 05012024 --end_time 15012024
 delete user --by 3 --id 4
 edit project --by 1 --id 1 --end_time 31012024
 edit project --by 1 --id 1 --status finished

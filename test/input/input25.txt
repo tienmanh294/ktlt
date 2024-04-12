@@ -1,0 +1,4 @@
+set_date 01012024
+create user --fullname Leader1 --role leader
+set_date 01022024
+create_report

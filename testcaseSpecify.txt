@@ -6,7 +6,7 @@
 06: delete task(without issue)
 07: create issue, edit issue (name, description, status, members) edit with member of task; member outside task; user from another project; user
 not a leader or a manager change status to resolved
-08: issue status auto change to expired
+08: issue status auto change to expired, user create project is not manager 
 09: create project and edit project
 10: delete project
 11: wrong format input
@@ -20,4 +20,3 @@ not a leader or a manager change status to resolved
 19: check member is member, leader is leader
 20: delete project manager
 21: project manager delete another manager's project
-20: delete issue(NOTHING)
