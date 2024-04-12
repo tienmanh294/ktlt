@@ -73,25 +73,37 @@ Project:
 
 ### Delete
 User: Sau khi xoá user, toàn bộ task, issue, project chứa id của user sẽ xoá id của user ra khỏi danh sách (member, leader)
+
 Issue: Sau khi xoá issue task chứa issue sẽ xoá issue ra khỏi danh sách
+
 Task: Sau khi xoá task project chứa task sẽ xoá task ra khỏi danh sách. Xoá toàn bộ issue thuộc task
+
 Project: Sau khi xoá project, toàn bộ task và issue trong project sẽ bị xoá
 ### User
 Không thể xoá project manager
+
 Trong danh sách --member kiểm tra id là member hay không
+
 Trong danh sách --leader kiểm tra id là leader hay không
+
 Chỉ có thể gán user chứa trong danh sách leader, member của project cho danh sách member của task trong project (gán danh sách member ngoài project cho task trong project thì raise lỗi)
+
 Luôn luôn kiểm tra id của người dùng có nằm trong danh sách người dùng hay không
+
 Kiểm tra id của user có nằm trong project hay không, người ngoài project không được tạo sửa xoá, task, issue (dù là role leader hay manager)
+
 ### Date
 Kiểm tra tính hợp lệ của date ví dụ ngày 32 hay ngày 30 tháng 2, tháng có giá trị quá 12
+
 Không thể edit, tạo task với ngày end_time của task quá ngày project chứa trong task
+
 Không thể edit, tạo task với ngày start_time của task trước ngày project chứa trong task
+
 ### Project
 Project manager không thể xoá được project của người khác
 
 ## Testcase
-Testcase với UnitTest, chỉ kiểm tra những trường hợp không vi phạm
+Testcase với UnitTest, chỉ kiểm tra những trường hợp không vi phạm. Testcase được viết trong file UnitTest.cpp
 - TEST(CreateUser,Subtest_Create_Leader): Tạo user, kiểm tra hàm CreateUser
 - TEST(EditUser,Subtest_EditUserName): Chỉnh sửa thông tin user, kiểm tra hàm EditUser
 - TEST(DeleteUser,Subtest_DeleteUser): Xoá user, kiểm tra hàm DeleteUser
