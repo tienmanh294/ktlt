@@ -6,10 +6,10 @@ int main(int argc, char* argv[]){
         return 0;
     }
     
-    std::string filename="test/input/";
+    //std::string filename="test/input/";
     std::string inputFileName=argv[1];
-    std::ifstream input(filename+inputFileName);
-    //std::ifstream input(inputFileName);
+    //std::ifstream input(filename+inputFileName);
+    std::ifstream input(inputFileName);
     std::map<int,Project*>projects;
     std::map<int,User*>users;
     std::map<int,Issue*>issues;

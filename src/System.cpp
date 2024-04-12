@@ -164,8 +164,8 @@ void CreateReport(std::string inputFileName,std::map<int,Project*>projects,std::
     issueStatus[IssueStatus::resolved]="resolved";
     std::string numberTestCase=inputFileName.substr(5,2);
     
-    std::ofstream output("test/output/output"+numberTestCase+"_"+globalDate+".txt");
-    //std::ofstream output("Report_"+globalDate+".txt");
+    //std::ofstream output("test/output/output"+numberTestCase+"_"+globalDate+".txt");
+    std::ofstream output("Report_"+globalDate+".txt");
     std::map<int, Project*>::iterator i;
     for (i = projects.begin(); i != projects.end(); i++)
     {
