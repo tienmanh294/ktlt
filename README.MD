@@ -36,7 +36,7 @@ cmake -S . -B .
 #build
 cmake --build . -j 12
 #running test
-cmake -V
+ctest -V
 ```
 File __main__ will generate
 Running ./main input.txt
